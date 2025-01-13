@@ -3,8 +3,11 @@
 Bu uygulama, SmartThings API'sini kullanarak akıllı klimanızı kontrol etmenizi sağlayan bir masaüstü uygulamasıdır.
 
 ![Resim1](https://github.com/user-attachments/assets/e2ca9cba-515e-43f1-af4b-cb723a529d9c)
+<br/>
 ![Resim2](https://github.com/user-attachments/assets/a6c737f7-e092-4ed9-a257-339f93459075)
+<br/>
 ![Resim3](https://github.com/user-attachments/assets/f12e52fa-f652-412c-b18e-4e71dfb4261e)
+<br/>
 ![Resim4](https://github.com/user-attachments/assets/54ec1771-9b2c-4194-bba4-1eab7d325120)
 
 
