@@ -1,0 +1,310 @@
+body {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    padding: 20px 0;
+    position: relative;
+    -webkit-app-region: drag;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://i.imgur.com/8TuR5W3.png') repeat;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+.card {
+    margin-top: 20px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #0062E6, #33AEFF);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1.5rem;
+    border-bottom: none;
+}
+
+.status-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.status-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.mode-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-radius: 10px !important;
+    margin: 5px;
+    padding: 15px !important;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(13,110,253,0.2);
+    -webkit-app-region: no-drag;
+}
+
+.mode-btn.active {
+    background: linear-gradient(135deg, #0062E6, #33AEFF);
+    color: white;
+    border: none;
+}
+
+.mode-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.power-btn {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    -webkit-app-region: no-drag;
+}
+
+.power-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.gauge-container {
+    position: relative;
+    height: 250px;
+    margin: 10px 0;
+    background: rgba(255,255,255,0.5);
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.temp-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    border: none;
+    background: linear-gradient(135deg, #0062E6, #33AEFF);
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -webkit-app-region: no-drag;
+}
+
+.temp-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.temp-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0d6efd;
+    min-width: 100px;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.manual-temp-control {
+    padding: 0 15px;
+}
+
+.manual-temp-control .input-group {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.manual-temp-control input {
+    border: 1px solid rgba(13,110,253,0.2);
+    padding: 10px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.manual-temp-control input:focus {
+    border-color: #0d6efd;
+    box-shadow: none;
+}
+
+.manual-temp-control .btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #0062E6, #33AEFF);
+    border: none;
+    font-weight: 500;
+}
+
+.manual-temp-control .btn:hover {
+    background: linear-gradient(135deg, #0052c2, #2b93d8);
+}
+
+h4 {
+    color: #1e3c72;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.status-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #0d6efd;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+}
+
+.loading::before {
+    content: '↻';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #0d6efd;
+    z-index: 1;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+button, input, a {
+    -webkit-app-region: no-drag;
+}
+
+/* Detaylı durum kartı stilleri */
+.table-responsive {
+    margin-top: 1rem;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem;
+}
+
+.table td:first-child {
+    width: 40%;
+    font-weight: 500;
+}
+
+.table td:last-child {
+    text-align: right;
+}
+
+.badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+#detailPower.badge {
+    min-width: 80px;
+}
+
+/* Mevcut durum kartı stilleri */
+.current-status {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.current-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.status-item {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.status-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.status-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-item .status-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+#currentPowerStatus {
+    font-size: 1.2rem;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+#currentPowerStatus.active {
+    background-color: #198754;
+    color: white;
+}
+
+#currentPowerStatus.inactive {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Mevcut stiller devam eder */ 

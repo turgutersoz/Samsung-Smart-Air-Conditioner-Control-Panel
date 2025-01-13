@@ -1,0 +1,67 @@
+{
+  "name": "klima-kontrol",
+  "version": "1.0.0",
+  "description": "Klima Kontrol Masaüstü Uygulaması",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apexcharts": "^3.45.1",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jquery": "^3.6.0"
+  },
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "appId": "com.klimakontrol.app",
+    "productName": "Klima Kontrol",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!{dist}/**/*",
+      "assets/**/*",
+      "public/**/*",
+      "preload.js",
+      "main.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/air.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Klima Kontrol",
+      "installerIcon": "assets/air.ico",
+      "uninstallerIcon": "assets/air.ico"
+    }
+  }
+}

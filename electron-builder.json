@@ -1,0 +1,52 @@
+{
+  "appId": "com.klimakontrol.app",
+  "productName": "Klima Kontrol",
+  "directories": {
+    "output": "dist",
+    "buildResources": "build"
+  },
+  "files": [
+    "**/*",
+    "!dist",
+    "!build",
+    "node_modules/**/*",
+    "package.json",
+    "preload.js"
+  ],
+  "extraResources": [
+    {
+      "from": "public/config.html",
+      "to": "public/config.html"
+    },
+    {
+      "from": "assets",
+      "to": "assets",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "assets/air.ico",
+    "signAndEditExecutable": false,
+    "publisherName": "Klima Kontrol"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Klima Kontrol"
+  },
+  "portable": {
+    "artifactName": "KlimaKontrol.exe"
+  }
+} 

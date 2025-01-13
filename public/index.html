@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Klima Kontrol Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script>window.jQuery = window.$ = require('jquery');</script>
+    <style>
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+        }
+        .loading::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #0d6efd;
+            z-index: 1;
+        }
+        .refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: none;
+            z-index: 1000;
+            animation: fadeInOut 0.5s ease-in-out;
+            border: 1px solid rgba(13, 110, 253, 0.2);
+        }
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="refresh-indicator">
+            Son güncelleme: 0 saniye önce
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-snowflake me-2"></i>Akıllı Klima Kontrol Paneli</h2>
+            </div>
+            <div class="card-body">
+                <form id="climateForm">
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <button type="button" id="powerBtn" class="power-btn btn btn-success">
+                                <i class="fas fa-power-off me-2"></i>Klimayı Aç
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="status-card">
+                                <h4><i class="fas fa-thermometer-half me-2"></i>Sıcaklık</h4>
+                                <div class="gauge-container" id="tempGauge"></div>
+                                <div class="temp-control">
+                                    <button type="button" class="temp-btn" onclick="adjustTemp(-1)">-</button>
+                                    <div class="temp-display" id="tempDisplay">--°C</div>
+                                    <button type="button" class="temp-btn" onclick="adjustTemp(1)">+</button>
+                                </div>
+                                <div class="manual-temp-control mt-3">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="manualTempInput" 
+                                               min="16" max="30" step="1" placeholder="16-30°C arası">
+                                        <button class="btn btn-primary" type="button" onclick="setManualTemp()">
+                                            <i class="fas fa-check"></i> Ayarla
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <div class="status-card">
+                                <h4><i class="fas fa-tint me-2"></i>Nem Oranı</h4>
+                                <div class="gauge-container" id="humidityGauge"></div>
+                                <div class="text-center mt-3">
+                                    <span class="status-value" id="humidityValue">--%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-4">
+                            <div class="status-card">
+                                <h4><i class="fas fa-sliders-h me-2"></i>Mod Seçimi</h4>
+                                <div class="d-grid gap-2" id="modeButtons">
+                                    <button type="button" class="btn btn-outline-primary mode-btn" data-mode="auto">
+                                        <i class="fas fa-magic me-2"></i>Otomatik
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary mode-btn" data-mode="cool">
+                                        <i class="fas fa-snowflake me-2"></i>Soğutma
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary mode-btn" data-mode="heat">
+                                        <i class="fas fa-sun me-2"></i>Isıtma
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary mode-btn" data-mode="dry">
+                                        <i class="fas fa-tint-slash me-2"></i>Nem Alma
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary mode-btn" data-mode="wind">
+                                        <i class="fas fa-fan me-2"></i>Fan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="status-card">
+                                <h4><i class="fas fa-star me-2"></i>Opsiyonel Modlar</h4>
+                                <div class="d-flex flex-wrap gap-2" id="optionalModes">
+                                    <!-- Opsiyonel modlar JavaScript ile doldurulacak -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="status-card">
+                                <h4><i class="fas fa-info-circle me-2"></i>Detaylı Durum</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <td><i class="fas fa-power-off me-2"></i>Güç Durumu</td>
+                                                <td><span id="detailPower" class="badge"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="fas fa-thermometer-half me-2"></i>Ayarlanan Sıcaklık</td>
+                                                <td><span id="detailSetTemp">--°C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="fas fa-thermometer-half me-2"></i>Oda Sıcaklığı</td>
+                                                <td><span id="detailRoomTemp">--°C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="fas fa-tint me-2"></i>Nem Oranı</td>
+                                                <td><span id="detailHumidity">--%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="fas fa-sliders-h me-2"></i>Çalışma Modu</td>
+                                                <td><span id="detailMode">--</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><i class="fas fa-star me-2"></i>Özel Mod</td>
+                                                <td><span id="detailOptionalMode">--</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="app.js"></script>
+    <script>
+        // Debounce fonksiyonu - art arda gelen çağrıları kontrol etmek için
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Yükleniyor göstergesi
+        function showLoading() {
+            $('.status-card').addClass('loading');
+            $('.refresh-indicator').fadeIn(200);
+        }
+
+        function hideLoading() {
+            $('.status-card').removeClass('loading');
+            setTimeout(() => {
+                $('.refresh-indicator').fadeOut(200);
+            }, 2000);
+        }
+
+        // API çağrıları
+        async function sendCommand(command, capability, argument = null) {
+            try {
+                showLoading();
+                const response = await fetch('/api/command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command, capability, argument })
+                });
+                const result = await response.json();
+                await refreshData(); // Komut sonrası verileri yenile
+                return result;
+            } catch (error) {
+                console.error('Komut hatası:', error);
+                throw error;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Durumu güncelle
+        async function refreshData() {
+            try {
+                showLoading();
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                console.log('Frontend API yanıtı:', data);
+
+                // Sıcaklık ve nem değerlerini güncelle
+                updateTemperature(data.temperature);
+                updateSetTemperature(data.setTemperature);
+                updateHumidity(data.humidity);
+                updatePowerStatus(data.power);
+                updateMode(data.mode);
+                updateOptionalModes(data.optionalModes, data.currentOptionalMode);
+
+                // Detaylı durum tablosunu güncelle
+                updateDetailedStatus(data);
+            } catch (error) {
+                console.error('Veri yenileme hatası:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function updateTemperature(temperature) {
+            if (temperature !== null && typeof temperature === 'number' && !isNaN(temperature)) {
+                $('#detailRoomTemp').text(temperature.toFixed(1) + '°C');
+                tempChart.updateSeries([Math.round(temperature)]);
+                $('#tempDisplay').text(temperature.toFixed(1));
+            } else {
+                $('#detailRoomTemp').text('--°C');
+                tempChart.updateSeries([0]);
+                $('#tempDisplay').text('--');
+            }
+        }
+
+        function updateSetTemperature(setTemperature) {
+            if (setTemperature !== null && typeof setTemperature === 'number' && !isNaN(setTemperature)) {
+                $('#detailSetTemp').text(setTemperature.toFixed(1) + '°C');
+            } else {
+                $('#detailSetTemp').text('--°C');
+            }
+        }
+
+        function updateHumidity(humidity) {
+            if (humidity !== null && typeof humidity === 'number' && !isNaN(humidity)) {
+                $('#detailHumidity').text(humidity.toFixed(1) + '%');
+                $('#humidityValue').text(humidity.toFixed(1) + '%');
+                humidityChart.updateSeries([Math.round(humidity)]);
+            } else {
+                $('#detailHumidity').text('--%');
+                $('#humidityValue').text('--%');
+                humidityChart.updateSeries([0]);
+            }
+        }
+
+        function updatePowerStatus(power) {
+            const powerBtn = $('#powerBtn');
+            const powerStatus = $('#detailPower');
+            
+            if (power === 'on') {
+                powerBtn
+                    .removeClass('btn-success')
+                    .addClass('btn-danger')
+                    .html('<i class="fas fa-power-off me-2"></i>Klimayı Kapat');
+                powerStatus
+                    .removeClass('bg-danger')
+                    .addClass('bg-success')
+                    .text('Açık');
+            } else {
+                powerBtn
+                    .removeClass('btn-danger')
+                    .addClass('btn-success')
+                    .html('<i class="fas fa-power-off me-2"></i>Klimayı Aç');
+                powerStatus
+                    .removeClass('bg-success')
+                    .addClass('bg-danger')
+                    .text('Kapalı');
+            }
+        }
+
+        function updateMode(mode) {
+            $('#detailMode').text(mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : '--');
+            $('.mode-btn').removeClass('active');
+            $(`.mode-btn[data-mode="${mode}"]`).addClass('active');
+        }
+
+        function updateOptionalModes(modes, currentMode) {
+            const optionalModesContainer = $('#optionalModes');
+            optionalModesContainer.empty();
+
+            if (modes && modes.length > 0) {
+                modes.forEach(mode => {
+                    const button = $('<button>')
+                        .addClass('btn btn-outline-secondary mode-btn')
+                        .addClass(mode === currentMode ? 'active' : '')
+                        .attr('type', 'button')
+                        .attr('data-mode', mode)
+                        .html(`<i class="fas fa-toggle-on me-2"></i>${mode.charAt(0).toUpperCase() + mode.slice(1)}`);
+                    
+                    button.on('click', () => toggleOptionalMode(mode));
+                    optionalModesContainer.append(button);
+                });
+            } else {
+                optionalModesContainer.html('<div class="alert alert-info">Opsiyonel modlar bulunamadı.</div>');
+            }
+
+            $('#detailOptionalMode').text(currentMode ? currentMode.charAt(0).toUpperCase() + currentMode.slice(1) : '--');
+        }
+
+        function updateDetailedStatus(data) {
+            // Diğer detaylı durum güncellemeleri buraya eklenebilir
+        }
+
+        // Sıcaklık kontrolü
+        function adjustTemp(change) {
+            const currentTemp = parseInt($('#tempDisplay').text()) || 24;
+            const newTemp = Math.min(Math.max(currentTemp + change, 16), 30);
+            $('#tempDisplay').text(newTemp);
+            $('#tempInput').val(newTemp);
+            
+            // Sıcaklık değiştiğinde otomatik olarak gönder
+            sendCommand('setCoolingSetpoint', 'thermostatCoolingSetpoint', newTemp);
+        }
+
+        // Manuel sıcaklık ayarı
+        function setManualTemp() {
+            const temp = parseInt($('#manualTempInput').val());
+            if (temp >= 16 && temp <= 30) {
+                $('#tempDisplay').text(temp);
+                $('#tempInput').val(temp);
+                sendCommand('setCoolingSetpoint', 'thermostatCoolingSetpoint', temp);
+                $('#manualTempInput').val('');
+            }
+        }
+
+        // Opsiyonel mod değiştirme
+        async function toggleOptionalMode(mode) {
+            try {
+                await sendCommand('setAcOptionalMode', 'custom.airConditionerOptionalMode', mode);
+            } catch (error) {
+                console.error('Opsiyonel mod değiştirme hatası:', error);
+            }
+        }
+
+        // Güç kontrolü
+        $('#powerBtn').click(async function() {
+            const currentState = $(this).hasClass('btn-danger');
+            try {
+                await sendCommand(currentState ? 'off' : 'on', 'switch');
+            } catch (error) {
+                console.error('Güç durumu değiştirme hatası:', error);
+            }
+        });
+
+        // Mod değiştirme
+        $('.mode-btn').click(async function() {
+            const mode = $(this).data('mode');
+            try {
+                await sendCommand('setAirConditionerMode', 'airConditionerMode', mode);
+            } catch (error) {
+                console.error('Mod değiştirme hatası:', error);
+            }
+        });
+
+        // Enter tuşu ile sıcaklık gönderme
+        $('#manualTempInput').on('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                setManualTemp();
+            }
+        });
+
+        // İlk yükleme ve otomatik yenileme
+        $(document).ready(function() {
+            refreshData();
+            // Her 15 saniyede bir verileri yenile
+            setInterval(refreshData, 15000);
+
+            // Son yenileme zamanını göster
+            let lastRefreshTime = new Date();
+            function updateLastRefreshTime() {
+                const now = new Date();
+                const diff = Math.floor((now - lastRefreshTime) / 1000);
+                if (diff < 60) {
+                    $('.refresh-indicator').text(`Son güncelleme: ${diff} saniye önce`);
+                }
+            }
+            setInterval(updateLastRefreshTime, 1000);
+
+            // Her yenilemede zamanı güncelle
+            const originalRefreshData = refreshData;
+            refreshData = async function() {
+                await originalRefreshData();
+                lastRefreshTime = new Date();
+            };
+        });
+    </script>
+</body>
+</html> 
