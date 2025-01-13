@@ -2,6 +2,11 @@
 
 Bu uygulama, SmartThings API'sini kullanarak akıllı klimanızı kontrol etmenizi sağlayan bir masaüstü uygulamasıdır.
 
+<a href="https://hizliresim.com/n208u44"><img src="https://i.hizliresim.com/n208u44.png"></a>
+<a href="https://hizliresim.com/jqsuv1q"><img src="https://i.hizliresim.com/jqsuv1q.png"></a>
+<a href="https://hizliresim.com/afjy66b"><img src="https://i.hizliresim.com/afjy66b.png"></a>
+<a href="https://hizliresim.com/iwj041r"><img src="https://i.hizliresim.com/iwj041r.png"></a>
+
 ## Özellikler
 
 - Klima açma/kapama
