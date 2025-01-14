@@ -1,8 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-$apiKey = '1662e7f8-d431-40f1-aee7-c463a3956d84';
-$deviceId = 'bc19bc8d-9cc5-9668-a802-cbe6ad246b58';
+$apiKey = 'APIKEY';
+$deviceId = 'DEVICEID';
 $apiUrl = "https://api.smartthings.com/v1/devices/{$deviceId}/status";
 
 $ch = curl_init($apiUrl);
